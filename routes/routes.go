@@ -2,16 +2,22 @@ package routes
 
 import (
 	"defterdar-go/controllers"
+	"defterdar-go/middleware"
 	"github.com/gorilla/mux"
 	httpSwagger "github.com/swaggo/http-swagger"
 	"net/http"
 )
 
-func Initroutes() *mux.Router {
+func InitRoutes() *mux.Router {
 	r := mux.NewRouter()
 
 	r.HandleFunc("/user/register", controllers.Register).Methods("POST")
 	r.HandleFunc("/user/login", controllers.Login).Methods("POST")
+	r.Handle("/user/get-profile", middleware.JWTAuth(http.HandlerFunc(controllers.GetProfile))).Methods("GET")
+	r.Handle("/user/update-profile", middleware.JWTAuth(http.HandlerFunc(controllers.UpdateProfile))).Methods("PUT")
+	r.Handle("/user/update-password", middleware.JWTAuth(http.HandlerFunc(controllers.UpdatePassword))).Methods("PUT")
+	r.Handle("/users/{user_id}/delete", middleware.JWTAuth(middleware.Authorize("admin")(http.HandlerFunc(controllers.DeleteUser)))).Methods("DELETE")
+	r.Handle("/users/close-account", middleware.JWTAuth(http.HandlerFunc(controllers.CloseAccount))).Methods("DELETE")
 
 	r.PathPrefix("/swagger/").Handler(httpSwagger.Handler(
 		httpSwagger.URL("http://localhost:8080/docs/swagger.json"), // The url pointing to API definition

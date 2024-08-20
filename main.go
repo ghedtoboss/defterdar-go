@@ -33,7 +33,7 @@ func main() {
 	database.Connect()
 	database.Migrate()
 
-	r := routes.Initroutes()
+	r := routes.InitRoutes()
 
 	r.PathPrefix("/swagger/").Handler(httpSwagger.WrapHandler)
 

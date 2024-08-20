@@ -13,7 +13,7 @@ import (
 // Register godoc
 // @Summary Register a new user
 // @Description Register a new user with name, email, password, role
-// @Tags User
+// @Tags Auth
 // @Accept json
 // @Produce json
 // @Param user body models.User true "User"
@@ -60,7 +60,7 @@ func Register(w http.ResponseWriter, r *http.Request) {
 // Login godoc
 // @Summary Login a new user
 // @Description Register a new user with name, email, password, role
-// @Tags User
+// @Tags Auth
 // @Accept json
 // @Produce json
 // @Param user body models.LoginReq true "User"

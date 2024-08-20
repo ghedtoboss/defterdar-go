@@ -10,6 +10,13 @@ definitions:
     - email
     - password
     type: object
+  models.PasswordUpdateReq:
+    properties:
+      new_password:
+        type: string
+      old_password:
+        type: string
+    type: object
   models.User:
     properties:
       createdAt:
@@ -41,6 +48,36 @@ info:
   title: Defterdar-go
   version: "1.0"
 paths:
+  /user/get-profile:
+    get:
+      consumes:
+      - application/json
+      description: Pulls the user's own profile information.
+      parameters:
+      - description: User
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.User'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.User'
+        "400":
+          description: Invalid input.
+          schema:
+            type: string
+        "404":
+          description: User not found.
+          schema:
+            type: string
+      summary: GetProfile a user
+      tags:
+      - User
   /user/login:
     post:
       consumes:
@@ -70,7 +107,7 @@ paths:
             type: string
       summary: Login a new user
       tags:
-      - User
+      - Auth
   /user/register:
     post:
       consumes:
@@ -99,6 +136,116 @@ paths:
           schema:
             type: string
       summary: Register a new user
+      tags:
+      - Auth
+  /user/update-password:
+    put:
+      consumes:
+      - application/json
+      description: Update the user's password.
+      parameters:
+      - description: User
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.PasswordUpdateReq'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Password updated successfully.
+          schema:
+            type: string
+        "400":
+          description: Invalid input.
+          schema:
+            type: string
+        "404":
+          description: User not found.
+          schema:
+            type: string
+      summary: UpdatePassword a user
+      tags:
+      - User
+  /user/update-profile:
+    put:
+      consumes:
+      - application/json
+      description: Update the user's profile.
+      parameters:
+      - description: User
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.User'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: User updated successfully.
+          schema:
+            type: string
+        "400":
+          description: Invalid input.
+          schema:
+            type: string
+        "404":
+          description: User not found.
+          schema:
+            type: string
+      summary: UpdateProfile a user
+      tags:
+      - User
+  /users/{user_id}/delete:
+    delete:
+      description: Delete a user by ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "204":
+          description: User deleted successfully
+          schema:
+            type: string
+        "400":
+          description: Invalid user ID
+          schema:
+            type: string
+        "404":
+          description: User not found
+          schema:
+            type: string
+      summary: Delete a user
+      tags:
+      - User
+  /users/close-account:
+    delete:
+      description: Close account
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "204":
+          description: Account closed successfully.
+          schema:
+            type: string
+        "400":
+          description: Invalid user ID
+          schema:
+            type: string
+        "404":
+          description: User not found
+          schema:
+            type: string
+      summary: Close a user own account
       tags:
       - User
 swagger: "2.0"
