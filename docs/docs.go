@@ -23,6 +23,52 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/shop": {
+            "post": {
+                "description": "Create a shop with name and adress",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Shop"
+                ],
+                "summary": "Create a shop",
+                "parameters": [
+                    {
+                        "description": "Shop",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Shop"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Shop created successfully.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to create shop.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/transaction": {
             "post": {
                 "description": "Create a new transaction.",
@@ -444,6 +490,12 @@ const docTemplate = `{
                 "phone": {
                     "type": "string"
                 },
+                "shop": {
+                    "$ref": "#/definitions/models.Shop"
+                },
+                "shopID": {
+                    "type": "integer"
+                },
                 "updatedAt": {
                     "type": "string"
                 },
@@ -471,6 +523,12 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "id": {
+                    "type": "integer"
+                },
+                "shop": {
+                    "$ref": "#/definitions/models.Shop"
+                },
+                "shopID": {
                     "type": "integer"
                 },
                 "transactionType": {
@@ -514,6 +572,32 @@ const docTemplate = `{
                 }
             }
         },
+        "models.Shop": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "owner": {
+                    "$ref": "#/definitions/models.User"
+                },
+                "ownerID": {
+                    "type": "integer"
+                },
+                "updatedAt": {
+                    "type": "string"
+                }
+            }
+        },
         "models.User": {
             "type": "object",
             "properties": {
@@ -533,7 +617,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "role": {
-                    "description": "e.g., admin, user, etc.",
+                    "description": "e.g., admin, owner, employee etc.",
                     "type": "string"
                 },
                 "updatedAt": {

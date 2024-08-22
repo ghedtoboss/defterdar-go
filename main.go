@@ -3,9 +3,10 @@ package main
 import (
 	"defterdar-go/database"
 	"defterdar-go/routes"
-	"github.com/joho/godotenv"
 	"log"
 	"net/http"
+
+	"github.com/joho/godotenv"
 
 	httpSwagger "github.com/swaggo/http-swagger"
 )

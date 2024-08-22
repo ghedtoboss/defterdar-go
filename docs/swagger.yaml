@@ -14,6 +14,10 @@ definitions:
         type: string
       phone:
         type: string
+      shop:
+        $ref: '#/definitions/models.Shop'
+      shopID:
+        type: integer
       updatedAt:
         type: string
       userID:
@@ -32,6 +36,10 @@ definitions:
       description:
         type: string
       id:
+        type: integer
+      shop:
+        $ref: '#/definitions/models.Shop'
+      shopID:
         type: integer
       transactionType:
         description: e.g., credit, debit
@@ -60,6 +68,23 @@ definitions:
       old_password:
         type: string
     type: object
+  models.Shop:
+    properties:
+      address:
+        type: string
+      createdAt:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      owner:
+        $ref: '#/definitions/models.User'
+      ownerID:
+        type: integer
+      updatedAt:
+        type: string
+    type: object
   models.User:
     properties:
       createdAt:
@@ -73,7 +98,7 @@ definitions:
       password:
         type: string
       role:
-        description: e.g., admin, user, etc.
+        description: e.g., admin, owner, employee etc.
         type: string
       updatedAt:
         type: string
@@ -91,6 +116,36 @@ info:
   title: Defterdar-go
   version: "1.0"
 paths:
+  /shop:
+    post:
+      consumes:
+      - application/json
+      description: Create a shop with name and adress
+      parameters:
+      - description: Shop
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.Shop'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Shop created successfully.
+          schema:
+            type: string
+        "400":
+          description: Invalid input
+          schema:
+            type: string
+        "500":
+          description: Failed to create shop.
+          schema:
+            type: string
+      summary: Create a shop
+      tags:
+      - Shop
   /transaction:
     post:
       consumes:

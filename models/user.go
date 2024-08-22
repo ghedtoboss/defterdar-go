@@ -7,7 +7,7 @@ type User struct {
 	Name      string `gorm:"size:100;not null"`
 	Email     string `gorm:"size:100;unique;not null"`
 	Password  string `gorm:"size:255;not null"`
-	Role      string `gorm:"size:20;not null"` // e.g., admin, user, etc.
+	Role      string `gorm:"size:20;not null"` // e.g., admin, owner, employee etc.
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }

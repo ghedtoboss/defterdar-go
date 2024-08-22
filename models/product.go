@@ -5,6 +5,7 @@ import "time"
 type Product struct {
 	ID          uint    `gorm:"primaryKey"`
 	UserID      uint    `gorm:"not null"`
+	ShopID      uint    `gorm:"not null"`
 	Name        string  `gorm:"size:100;not null"`
 	Description string  `gorm:"size:255"`
 	Price       float64 `gorm:"not null"`
@@ -13,4 +14,5 @@ type Product struct {
 	UpdatedAt   time.Time
 
 	User User `gorm:"foreignKey:UserID"`
+	Shop Shop `gorm:"foreignKey:ShopID"`
 }
