@@ -55,3 +55,33 @@ func Migrate() {
 		return
 	}
 }
+
+func Setup() {
+	err := os.Setenv("DSL", "root:Eses147852@tcp(127.0.0.1:3306)/defterdar?parseTime=true")
+	if err != nil {
+		return
+	}
+	Connect()
+	Migrate()
+	seedDatabase()
+}
+
+func Teardown() {
+	err := DB.Migrator().DropTable(&models.User{}, &models.Customer{}, &models.CashEntry{}, &models.Invoice{}, &models.Product{})
+	if err != nil {
+		log.Fatalf("Failed to drop tables: %v", err)
+	}
+}
+
+func seedDatabase() {
+	user := models.User{
+		Name:     "Test User",
+		Email:    "test@example.com",
+		Password: "password123",
+		Role:     "user",
+	}
+
+	if err := DB.Create(&user).Error; err != nil {
+		log.Fatalf("Failed to seed database: %v", err)
+	}
+}

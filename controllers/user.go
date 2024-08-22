@@ -70,9 +70,6 @@ func UpdateProfile(w http.ResponseWriter, r *http.Request) {
 	if input.Email != "" {
 		user.Email = input.Email
 	}
-	if user.Role != "" {
-		user.Role = input.Role
-	}
 
 	if result := database.DB.Save(&user); result.Error != nil {
 		http.Error(w, "Failed to update user.", http.StatusInternalServerError)

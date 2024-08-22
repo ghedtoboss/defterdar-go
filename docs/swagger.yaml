@@ -1,5 +1,48 @@
 basePath: /api/v1
 definitions:
+  models.Customer:
+    properties:
+      address:
+        type: string
+      createdAt:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      phone:
+        type: string
+      updatedAt:
+        type: string
+      userID:
+        type: integer
+    type: object
+  models.CustomerTransaction:
+    properties:
+      amount:
+        type: number
+      createdAt:
+        type: string
+      customer:
+        $ref: '#/definitions/models.Customer'
+      customerID:
+        type: integer
+      description:
+        type: string
+      id:
+        type: integer
+      transactionType:
+        description: e.g., credit, debit
+        type: string
+      updatedAt:
+        type: string
+      user:
+        $ref: '#/definitions/models.User'
+      userID:
+        type: integer
+    type: object
   models.LoginReq:
     properties:
       email:
@@ -48,6 +91,66 @@ info:
   title: Defterdar-go
   version: "1.0"
 paths:
+  /transaction:
+    post:
+      consumes:
+      - application/json
+      description: Create a new transaction.
+      parameters:
+      - description: Transaction
+        in: body
+        name: Transaction
+        required: true
+        schema:
+          $ref: '#/definitions/models.CustomerTransaction'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Transaction created successfully.
+          schema:
+            type: string
+        "400":
+          description: Invalid input.
+          schema:
+            type: string
+        "500":
+          description: Failed to create transaction
+          schema:
+            type: string
+      summary: Create a transaction
+      tags:
+      - Transaction
+  /transaction/{transaction_id}:
+    get:
+      consumes:
+      - application/json
+      description: Get a transaction.
+      parameters:
+      - description: Transaction
+        in: body
+        name: Transaction
+        required: true
+        schema:
+          $ref: '#/definitions/models.CustomerTransaction'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.CustomerTransaction'
+        "400":
+          description: Failed to create transaction
+          schema:
+            type: string
+        "404":
+          description: Failed to get transaction.
+          schema:
+            type: string
+      summary: Get a transaction
+      tags:
+      - Transaction
   /user/get-profile:
     get:
       consumes:
