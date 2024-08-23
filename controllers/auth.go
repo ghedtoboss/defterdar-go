@@ -4,15 +4,16 @@ import (
 	"defterdar-go/database"
 	"defterdar-go/models"
 	"encoding/json"
-	"github.com/dgrijalva/jwt-go"
-	"golang.org/x/crypto/bcrypt"
 	"net/http"
 	"time"
+
+	"github.com/dgrijalva/jwt-go"
+	"golang.org/x/crypto/bcrypt"
 )
 
 // Register godoc
 // @Summary Register a new user
-// @Description Register a new user with name, email, password, role
+// @Description Register a new user with name, email, password, role (e.g. owner, employee)
 // @Tags Auth
 // @Accept json
 // @Produce json

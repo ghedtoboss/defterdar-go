@@ -51,6 +51,31 @@ definitions:
       userID:
         type: integer
     type: object
+  models.Employee:
+    properties:
+      createdAt:
+        type: string
+      id:
+        type: integer
+      role:
+        description: e.g.
+        type: string
+      shop:
+        $ref: '#/definitions/models.Shop'
+      shopID:
+        type: integer
+      updatedAt:
+        type: string
+      user:
+        $ref: '#/definitions/models.User'
+      userID:
+        type: integer
+    type: object
+  models.EmployeeRoleUpdate:
+    properties:
+      role:
+        type: string
+    type: object
   models.LoginReq:
     properties:
       email:
@@ -116,6 +141,119 @@ info:
   title: Defterdar-go
   version: "1.0"
 paths:
+  /employee/{shop_id}:
+    delete:
+      consumes:
+      - application/json
+      description: Remove an employee from shop
+      parameters:
+      - description: Employee
+        in: body
+        name: employee
+        required: true
+        schema:
+          $ref: '#/definitions/models.Employee'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Employee removed successfully.
+          schema:
+            type: string
+        "400":
+          description: The employee is not an employee of this workplace.
+          schema:
+            type: string
+        "401":
+          description: Unauthorized.
+          schema:
+            type: string
+        "404":
+          description: Employee not found.
+          schema:
+            type: string
+        "500":
+          description: Failed to remove employee.
+          schema:
+            type: string
+      summary: Remove an employee
+      tags:
+      - Employee
+    post:
+      consumes:
+      - application/json
+      description: Add an employee with role
+      parameters:
+      - description: Employee
+        in: body
+        name: employee
+        required: true
+        schema:
+          $ref: '#/definitions/models.Employee'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Employee added successfully.
+          schema:
+            type: string
+        "400":
+          description: Invalid input.
+          schema:
+            type: string
+        "401":
+          description: Unauthorized.
+          schema:
+            type: string
+        "404":
+          description: Shop not found.
+          schema:
+            type: string
+        "500":
+          description: Failed to add employee.
+          schema:
+            type: string
+      summary: Add an employee
+      tags:
+      - Employee
+  /employee/{user_id}:
+    put:
+      consumes:
+      - application/json
+      description: Update an employee with role
+      parameters:
+      - description: Employee
+        in: body
+        name: employee
+        required: true
+        schema:
+          $ref: '#/definitions/models.EmployeeRoleUpdate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Employee role updated successfully.
+          schema:
+            type: string
+        "400":
+          description: Invalid input.
+          schema:
+            type: string
+        "401":
+          description: Unauthorized.
+          schema:
+            type: string
+        "404":
+          description: Employee not found.
+          schema:
+            type: string
+        "500":
+          description: Failed to update employee.
+          schema:
+            type: string
+      summary: Update an employee
+      tags:
+      - Employee
   /shop:
     post:
       consumes:
@@ -124,7 +262,7 @@ paths:
       parameters:
       - description: Shop
         in: body
-        name: user
+        name: shop
         required: true
         schema:
           $ref: '#/definitions/models.Shop'
@@ -144,6 +282,77 @@ paths:
           schema:
             type: string
       summary: Create a shop
+      tags:
+      - Shop
+  /shop/{shop_id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a shop
+      parameters:
+      - description: Shop
+        in: body
+        name: shop
+        required: true
+        schema:
+          $ref: '#/definitions/models.Shop'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Shop deleted successfully.
+          schema:
+            type: string
+        "400":
+          description: Invalid id.
+          schema:
+            type: string
+        "401":
+          description: Unauthorized.
+          schema:
+            type: string
+        "404":
+          description: Shop not found.
+          schema:
+            type: string
+        "500":
+          description: Failed to delete shop.
+          schema:
+            type: string
+      summary: Delete a shop
+      tags:
+      - Shop
+    put:
+      consumes:
+      - application/json
+      description: Update shop's name and adress
+      parameters:
+      - description: Shop
+        in: body
+        name: shop
+        required: true
+        schema:
+          $ref: '#/definitions/models.Shop'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Shop updated successfully.
+          schema:
+            type: string
+        "400":
+          description: Invalid input.
+          schema:
+            type: string
+        "401":
+          description: Unauthorized.
+          schema:
+            type: string
+        "500":
+          description: Failed to update shop.
+          schema:
+            type: string
+      summary: Update shop
       tags:
       - Shop
   /transaction:
@@ -270,7 +479,8 @@ paths:
     post:
       consumes:
       - application/json
-      description: Register a new user with name, email, password, role
+      description: Register a new user with name, email, password, role (e.g. owner,
+        employee)
       parameters:
       - description: User
         in: body

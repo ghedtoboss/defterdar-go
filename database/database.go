@@ -54,6 +54,11 @@ func Migrate() {
 	if err != nil {
 		return
 	}
+
+	err = DB.AutoMigrate(&models.Employee{})
+	if err != nil {
+		return
+	}
 }
 
 func Setup() {

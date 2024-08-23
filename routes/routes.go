@@ -3,9 +3,10 @@ package routes
 import (
 	"defterdar-go/controllers"
 	"defterdar-go/middleware"
+	"net/http"
+
 	"github.com/gorilla/mux"
 	httpSwagger "github.com/swaggo/http-swagger"
-	"net/http"
 )
 
 func InitRoutes() *mux.Router {
@@ -18,6 +19,10 @@ func InitRoutes() *mux.Router {
 	r.Handle("/user/update-password", middleware.JWTAuth(http.HandlerFunc(controllers.UpdatePassword))).Methods("PUT")
 	r.Handle("/users/{user_id}/delete", middleware.JWTAuth(middleware.Authorize("admin")(http.HandlerFunc(controllers.DeleteUser)))).Methods("DELETE")
 	r.Handle("/users/close-account", middleware.JWTAuth(http.HandlerFunc(controllers.CloseAccount))).Methods("DELETE")
+
+	r.Handle("/shop", middleware.JWTAuth(middleware.Authorize("owner")(http.HandlerFunc(controllers.CreateShop)))).Methods("POST")
+	r.Handle("/shop/{shop_id}", middleware.JWTAuth(middleware.Authorize("owner")(http.HandlerFunc(controllers.UpdateShop)))).Methods("PUT")
+	r.Handle("/shop/{shop_id}", middleware.JWTAuth(middleware.Authorize("owner")(http.HandlerFunc(controllers.DeleteShop)))).Methods("DELETE")
 
 	r.PathPrefix("/swagger/").Handler(httpSwagger.Handler(
 		httpSwagger.URL("http://localhost:8080/docs/swagger.json"), // The url pointing to API definition
