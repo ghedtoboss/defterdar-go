@@ -6,7 +6,7 @@ type Employee struct {
 	ID        uint   `gorm:"primaryKey"`
 	ShopID    uint   `gorm:"not null"`
 	UserID    uint   `gorm:"not null"`
-	Role      string `gorm:"not null"` //e.g.
+	Role      string `gorm:"not null"` //e.g. employee, manager
 	CreatedAt time.Time
 	UpdatedAt time.Time
 

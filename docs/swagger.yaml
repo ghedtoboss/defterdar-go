@@ -1,5 +1,33 @@
 basePath: /api/v1
 definitions:
+  models.CashEntry:
+    properties:
+      amount:
+        type: number
+      createdAt:
+        type: string
+      customer:
+        $ref: '#/definitions/models.Customer'
+      customerID:
+        type: integer
+      description:
+        type: string
+      entryType:
+        description: e.g., income, expense
+        type: string
+      id:
+        type: integer
+      shop:
+        $ref: '#/definitions/models.Shop'
+      shopID:
+        type: integer
+      updatedAt:
+        type: string
+      user:
+        $ref: '#/definitions/models.User'
+      userID:
+        type: integer
+    type: object
   models.Customer:
     properties:
       address:
@@ -58,7 +86,7 @@ definitions:
       id:
         type: integer
       role:
-        description: e.g.
+        description: e.g. employee, manager
         type: string
       shop:
         $ref: '#/definitions/models.Shop'
@@ -141,6 +169,41 @@ info:
   title: Defterdar-go
   version: "1.0"
 paths:
+  /cash:
+    post:
+      consumes:
+      - application/json
+      description: Create a cash entry with description, amount, type, and optionally
+        link it to a customer
+      parameters:
+      - description: CashEntry
+        in: body
+        name: cashentry
+        required: true
+        schema:
+          $ref: '#/definitions/models.CashEntry'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Cash entry created successfully.
+          schema:
+            type: string
+        "400":
+          description: Invalid input.
+          schema:
+            type: string
+        "404":
+          description: Shop or customer not found.
+          schema:
+            type: string
+        "500":
+          description: Failed to create cash entry.
+          schema:
+            type: string
+      summary: Create a cash entry
+      tags:
+      - Cash
   /employee/{shop_id}:
     delete:
       consumes:
@@ -177,6 +240,39 @@ paths:
           schema:
             type: string
       summary: Remove an employee
+      tags:
+      - Employee
+    get:
+      consumes:
+      - application/json
+      description: List employees in shop
+      parameters:
+      - description: Employee
+        in: body
+        name: employee
+        required: true
+        schema:
+          $ref: '#/definitions/models.Employee'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Employee'
+        "400":
+          description: Invalid id.
+          schema:
+            type: string
+        "401":
+          description: Unauthorized.
+          schema:
+            type: string
+        "404":
+          description: Employees not found.
+          schema:
+            type: string
+      summary: List employees
       tags:
       - Employee
     post:

@@ -23,7 +23,109 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/cash": {
+            "post": {
+                "description": "Create a cash entry with description, amount, type, and optionally link it to a customer",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Cash"
+                ],
+                "summary": "Create a cash entry",
+                "parameters": [
+                    {
+                        "description": "CashEntry",
+                        "name": "cashentry",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.CashEntry"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Cash entry created successfully.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Shop or customer not found.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to create cash entry.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/employee/{shop_id}": {
+            "get": {
+                "description": "List employees in shop",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Employee"
+                ],
+                "summary": "List employees",
+                "parameters": [
+                    {
+                        "description": "Employee",
+                        "name": "employee",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Employee"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Employee"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid id.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Employees not found.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
             "post": {
                 "description": "Add an employee with role",
                 "consumes": [
@@ -749,6 +851,48 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "models.CashEntry": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "number"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "customer": {
+                    "$ref": "#/definitions/models.Customer"
+                },
+                "customerID": {
+                    "type": "integer"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "entryType": {
+                    "description": "e.g., income, expense",
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "shop": {
+                    "$ref": "#/definitions/models.Shop"
+                },
+                "shopID": {
+                    "type": "integer"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "user": {
+                    "$ref": "#/definitions/models.User"
+                },
+                "userID": {
+                    "type": "integer"
+                }
+            }
+        },
         "models.Customer": {
             "type": "object",
             "properties": {
@@ -836,7 +980,7 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "role": {
-                    "description": "e.g.",
+                    "description": "e.g. employee, manager",
                     "type": "string"
                 },
                 "shop": {

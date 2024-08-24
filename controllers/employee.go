@@ -51,6 +51,7 @@ func AddEmployee(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	employee.ShopID = shop.ID
 	employee.CreatedAt = time.Now()
 	employee.UpdatedAt = time.Now()
 
@@ -155,6 +156,7 @@ func RemoveEmployee(w http.ResponseWriter, r *http.Request) {
 // @Failure 500 {string} string "Failed to update employee."
 // @Router /employee/{user_id} [put]
 func UpdateEmployeeRole(w http.ResponseWriter, r *http.Request) {
+	claim := r.Context().Value("user").(models.Claim)
 	params := mux.Vars(r)
 	userID, err := strconv.Atoi(params["user_id"])
 	if err != nil {
@@ -165,6 +167,17 @@ func UpdateEmployeeRole(w http.ResponseWriter, r *http.Request) {
 	var employee models.Employee
 	if result := database.DB.First(&employee, "user_id = ?", userID); result.Error != nil {
 		http.Error(w, "Employee not found.", http.StatusNotFound)
+		return
+	}
+
+	var shop models.Shop
+	if result := database.DB.First(&shop, employee.ShopID); result.Error != nil {
+		http.Error(w, "Shop not found.", http.StatusNotFound)
+		return
+	}
+
+	if shop.OwnerID != claim.UserID {
+		http.Error(w, "Unauthorized.", http.StatusUnauthorized)
 		return
 	}
 
@@ -189,4 +202,49 @@ func UpdateEmployeeRole(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+}
+
+// ListEmployeeInShop godoc
+// @Summary List employees
+// @Description List employees in shop
+// @Tags Employee
+// @Accept json
+// @Produce json
+// @Param employee body models.Employee true "Employee"
+// @Success 200 {object} models.Employee
+// @Failure 400 {string} string "Invalid id."
+// @Failure 401 {string} string "Unauthorized."
+// @Failure 404 {string} string "Employees not found."
+// @Router /employee/{shop_id} [get]
+func ListEmployeeInShop(w http.ResponseWriter, r *http.Request) {
+	claim := r.Context().Value("user").(models.Claim)
+	params := mux.Vars(r)
+	shopID, err := strconv.Atoi(params["shop_id"])
+	if err != nil {
+		http.Error(w, "Invalid id.", http.StatusBadRequest)
+		return
+	}
+
+	var shop models.Shop
+	if result := database.DB.First(&shop, shopID); result.Error != nil {
+		http.Error(w, "Shop not found.", http.StatusNotFound)
+		return
+	}
+
+	if shop.OwnerID != claim.UserID {
+		http.Error(w, "Unauthorized.", http.StatusUnauthorized)
+		return
+	}
+
+	var employees []models.Employee
+	if result := database.DB.Find(&employees, "shop_id = ?", shopID); result.Error != nil {
+		http.Error(w, "Employees not found.", http.StatusNotFound)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	err = json.NewEncoder(w).Encode(employees)
+	if err != nil {
+		return
+	}
 }
