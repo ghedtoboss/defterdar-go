@@ -17,3 +17,8 @@ type CashEntry struct {
 	Shop     Shop      `gorm:"foreignKey:ShopID"`
 	Customer *Customer `gorm:"foreignKey:CustomerID"`
 }
+
+type GetCashEntries struct {
+	FromDate time.Time `json:"from_date"`
+	ToDate   time.Time `json:"to_date"`
+}

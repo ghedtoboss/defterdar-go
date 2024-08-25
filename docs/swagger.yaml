@@ -170,6 +170,39 @@ info:
   version: "1.0"
 paths:
   /cash:
+    get:
+      consumes:
+      - application/json
+      description: Get cash entries with dates
+      parameters:
+      - description: CashEntry
+        in: body
+        name: cashentry
+        required: true
+        schema:
+          $ref: '#/definitions/models.CashEntry'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.CashEntry'
+        "400":
+          description: Invalid input.
+          schema:
+            type: string
+        "404":
+          description: Shop not found.
+          schema:
+            type: string
+        "500":
+          description: Failed to get cash entries.
+          schema:
+            type: string
+      summary: Get cash entries
+      tags:
+      - Cash
     post:
       consumes:
       - application/json

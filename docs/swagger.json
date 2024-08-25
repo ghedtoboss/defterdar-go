@@ -18,6 +18,56 @@
     "basePath": "/api/v1",
     "paths": {
         "/cash": {
+            "get": {
+                "description": "Get cash entries with dates",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Cash"
+                ],
+                "summary": "Get cash entries",
+                "parameters": [
+                    {
+                        "description": "CashEntry",
+                        "name": "cashentry",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.CashEntry"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/models.CashEntry"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Shop not found.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to get cash entries.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
             "post": {
                 "description": "Create a cash entry with description, amount, type, and optionally link it to a customer",
                 "consumes": [

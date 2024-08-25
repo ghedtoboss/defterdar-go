@@ -76,3 +76,44 @@ func CreateCashEntry(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
+
+// GetCashEntries godoc
+// @Summary Get cash entries
+// @Description Get cash entries with dates
+// @Tags Cash
+// @Accept json
+// @Produce json
+// @Param cashentry body models.CashEntry true "CashEntry"
+// @Success 201 {object}	models.CashEntry
+// @Failure 400 {string} string "Invalid input."
+// @Failure 404 {string} string "Shop not found."
+// @Failure 500 {string} string "Failed to get cash entries."
+// @Router /cash [get]
+func GetCashEntries(w http.ResponseWriter, r *http.Request) {
+	claim := r.Context().Value("user").(models.Claim)
+	var shop models.Shop
+	if result := database.DB.First(&shop, "owner_id = ?", int(claim.UserID)); result.Error != nil {
+		http.Error(w, "Shop not found.", http.StatusNotFound)
+		return
+	}
+
+	var date models.GetCashEntries
+	err := json.NewDecoder(r.Body).Decode(&date)
+	if err != nil {
+		http.Error(w, "Invalid input.", http.StatusBadRequest)
+		return
+	}
+
+	var cashEntries []models.CashEntry
+	if result := database.DB.Where("shop_id = ? AND created_at BETWEEN ? AND ?", shop.ID, date.FromDate, date.ToDate).Find(&cashEntries); result.Error != nil {
+		http.Error(w, "Failed to get cash entries.", http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	err = json.NewEncoder(w).Encode(cashEntries)
+	if err != nil {
+		http.Error(w, "Failed to encode cash entries.", http.StatusInternalServerError)
+		return
+	}
+}
