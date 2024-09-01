@@ -99,6 +99,15 @@ definitions:
       userID:
         type: integer
     type: object
+  models.EmployeeReportRequest:
+    properties:
+      employee_id:
+        type: integer
+      from_date:
+        type: string
+      to_date:
+        type: string
+    type: object
   models.EmployeeRoleUpdate:
     properties:
       role:
@@ -119,6 +128,15 @@ definitions:
       new_password:
         type: string
       old_password:
+        type: string
+    type: object
+  models.ReportRequest:
+    properties:
+      from_date:
+        type: string
+      report_type:
+        type: string
+      to_date:
         type: string
     type: object
   models.Shop:
@@ -383,6 +401,81 @@ paths:
       summary: Update an employee
       tags:
       - Employee
+  /report:
+    post:
+      consumes:
+      - application/json
+      description: Get reports of shop or user
+      parameters:
+      - description: Report
+        in: body
+        name: report
+        required: true
+        schema:
+          $ref: '#/definitions/models.ReportRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.CashEntry'
+        "400":
+          description: Invalid date range.
+          schema:
+            type: string
+        "404":
+          description: Shop not found.
+          schema:
+            type: string
+        "500":
+          description: Failed to encode data.
+          schema:
+            type: string
+      summary: Get report
+      tags:
+      - Report
+  /report/employee:
+    post:
+      consumes:
+      - application/json
+      description: Generate a cash report for a specific employee within a shop owned
+        by the user
+      parameters:
+      - description: Report Request
+        in: body
+        name: report_request
+        required: true
+        schema:
+          $ref: '#/definitions/models.EmployeeReportRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.CashEntry'
+            type: array
+        "400":
+          description: Invalid input.
+          schema:
+            type: string
+        "403":
+          description: 'Forbidden: Only owners can access this endpoint.'
+          schema:
+            type: string
+        "404":
+          description: Shop or employee not found.
+          schema:
+            type: string
+        "500":
+          description: Failed to generate report.
+          schema:
+            type: string
+      summary: Generate a cash report for an employee
+      tags:
+      - Report
   /shop:
     post:
       consumes:

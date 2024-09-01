@@ -341,6 +341,119 @@
                 }
             }
         },
+        "/report": {
+            "post": {
+                "description": "Get reports of shop or user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Report"
+                ],
+                "summary": "Get report",
+                "parameters": [
+                    {
+                        "description": "Report",
+                        "name": "report",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.ReportRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.CashEntry"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid date range.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Shop not found.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to encode data.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/report/employee": {
+            "post": {
+                "description": "Generate a cash report for a specific employee within a shop owned by the user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Report"
+                ],
+                "summary": "Generate a cash report for an employee",
+                "parameters": [
+                    {
+                        "description": "Report Request",
+                        "name": "report_request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.EmployeeReportRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.CashEntry"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden: Only owners can access this endpoint.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Shop or employee not found.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to generate report.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/shop": {
             "post": {
                 "description": "Create a shop with name and adress",
@@ -1044,6 +1157,20 @@
                 }
             }
         },
+        "models.EmployeeReportRequest": {
+            "type": "object",
+            "properties": {
+                "employee_id": {
+                    "type": "integer"
+                },
+                "from_date": {
+                    "type": "string"
+                },
+                "to_date": {
+                    "type": "string"
+                }
+            }
+        },
         "models.EmployeeRoleUpdate": {
             "type": "object",
             "properties": {
@@ -1074,6 +1201,20 @@
                     "type": "string"
                 },
                 "old_password": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.ReportRequest": {
+            "type": "object",
+            "properties": {
+                "from_date": {
+                    "type": "string"
+                },
+                "report_type": {
+                    "type": "string"
+                },
+                "to_date": {
                     "type": "string"
                 }
             }
