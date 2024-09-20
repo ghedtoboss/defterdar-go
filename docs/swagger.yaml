@@ -1,37 +1,7 @@
 basePath: /api/v1
 definitions:
-  models.CashEntry:
-    properties:
-      amount:
-        type: number
-      createdAt:
-        type: string
-      customer:
-        $ref: '#/definitions/models.Customer'
-      customerID:
-        type: integer
-      description:
-        type: string
-      entryType:
-        description: e.g., income, expense
-        type: string
-      id:
-        type: integer
-      shop:
-        $ref: '#/definitions/models.Shop'
-      shopID:
-        type: integer
-      updatedAt:
-        type: string
-      user:
-        $ref: '#/definitions/models.User'
-      userID:
-        type: integer
-    type: object
   models.Customer:
     properties:
-      address:
-        type: string
       createdAt:
         type: string
       email:
@@ -48,70 +18,6 @@ definitions:
         type: integer
       updatedAt:
         type: string
-      userID:
-        type: integer
-    type: object
-  models.CustomerTransaction:
-    properties:
-      amount:
-        type: number
-      createdAt:
-        type: string
-      customer:
-        $ref: '#/definitions/models.Customer'
-      customerID:
-        type: integer
-      description:
-        type: string
-      id:
-        type: integer
-      shop:
-        $ref: '#/definitions/models.Shop'
-      shopID:
-        type: integer
-      transactionType:
-        description: e.g., credit, debit
-        type: string
-      updatedAt:
-        type: string
-      user:
-        $ref: '#/definitions/models.User'
-      userID:
-        type: integer
-    type: object
-  models.Employee:
-    properties:
-      createdAt:
-        type: string
-      id:
-        type: integer
-      role:
-        description: e.g. employee, manager
-        type: string
-      shop:
-        $ref: '#/definitions/models.Shop'
-      shopID:
-        type: integer
-      updatedAt:
-        type: string
-      user:
-        $ref: '#/definitions/models.User'
-      userID:
-        type: integer
-    type: object
-  models.EmployeeReportRequest:
-    properties:
-      employee_id:
-        type: integer
-      from_date:
-        type: string
-      to_date:
-        type: string
-    type: object
-  models.EmployeeRoleUpdate:
-    properties:
-      role:
-        type: string
     type: object
   models.LoginReq:
     properties:
@@ -122,22 +28,6 @@ definitions:
     required:
     - email
     - password
-    type: object
-  models.PasswordUpdateReq:
-    properties:
-      new_password:
-        type: string
-      old_password:
-        type: string
-    type: object
-  models.ReportRequest:
-    properties:
-      from_date:
-        type: string
-      report_type:
-        type: string
-      to_date:
-        type: string
     type: object
   models.Shop:
     properties:
@@ -153,6 +43,31 @@ definitions:
         $ref: '#/definitions/models.User'
       ownerID:
         type: integer
+      phone:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  models.Transaction:
+    properties:
+      amount:
+        type: number
+      category:
+        type: string
+      createdAt:
+        type: string
+      date:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      shop:
+        $ref: '#/definitions/models.Shop'
+      shopID:
+        type: integer
+      type:
+        type: string
       updatedAt:
         type: string
     type: object
@@ -167,6 +82,8 @@ definitions:
       name:
         type: string
       password:
+        type: string
+      phone:
         type: string
       role:
         description: e.g., admin, owner, employee etc.
@@ -187,267 +104,11 @@ info:
   title: Defterdar-go
   version: "1.0"
 paths:
-  /cash:
+  /customers:
     get:
       consumes:
       - application/json
-      description: Get cash entries with dates
-      parameters:
-      - description: CashEntry
-        in: body
-        name: cashentry
-        required: true
-        schema:
-          $ref: '#/definitions/models.CashEntry'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/models.CashEntry'
-        "400":
-          description: Invalid input.
-          schema:
-            type: string
-        "404":
-          description: Shop not found.
-          schema:
-            type: string
-        "500":
-          description: Failed to get cash entries.
-          schema:
-            type: string
-      summary: Get cash entries
-      tags:
-      - Cash
-    post:
-      consumes:
-      - application/json
-      description: Create a cash entry with description, amount, type, and optionally
-        link it to a customer
-      parameters:
-      - description: CashEntry
-        in: body
-        name: cashentry
-        required: true
-        schema:
-          $ref: '#/definitions/models.CashEntry'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Cash entry created successfully.
-          schema:
-            type: string
-        "400":
-          description: Invalid input.
-          schema:
-            type: string
-        "404":
-          description: Shop or customer not found.
-          schema:
-            type: string
-        "500":
-          description: Failed to create cash entry.
-          schema:
-            type: string
-      summary: Create a cash entry
-      tags:
-      - Cash
-  /employee/{shop_id}:
-    delete:
-      consumes:
-      - application/json
-      description: Remove an employee from shop
-      parameters:
-      - description: Employee
-        in: body
-        name: employee
-        required: true
-        schema:
-          $ref: '#/definitions/models.Employee'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Employee removed successfully.
-          schema:
-            type: string
-        "400":
-          description: The employee is not an employee of this workplace.
-          schema:
-            type: string
-        "401":
-          description: Unauthorized.
-          schema:
-            type: string
-        "404":
-          description: Employee not found.
-          schema:
-            type: string
-        "500":
-          description: Failed to remove employee.
-          schema:
-            type: string
-      summary: Remove an employee
-      tags:
-      - Employee
-    get:
-      consumes:
-      - application/json
-      description: List employees in shop
-      parameters:
-      - description: Employee
-        in: body
-        name: employee
-        required: true
-        schema:
-          $ref: '#/definitions/models.Employee'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.Employee'
-        "400":
-          description: Invalid id.
-          schema:
-            type: string
-        "401":
-          description: Unauthorized.
-          schema:
-            type: string
-        "404":
-          description: Employees not found.
-          schema:
-            type: string
-      summary: List employees
-      tags:
-      - Employee
-    post:
-      consumes:
-      - application/json
-      description: Add an employee with role
-      parameters:
-      - description: Employee
-        in: body
-        name: employee
-        required: true
-        schema:
-          $ref: '#/definitions/models.Employee'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Employee added successfully.
-          schema:
-            type: string
-        "400":
-          description: Invalid input.
-          schema:
-            type: string
-        "401":
-          description: Unauthorized.
-          schema:
-            type: string
-        "404":
-          description: Shop not found.
-          schema:
-            type: string
-        "500":
-          description: Failed to add employee.
-          schema:
-            type: string
-      summary: Add an employee
-      tags:
-      - Employee
-  /employee/{user_id}:
-    put:
-      consumes:
-      - application/json
-      description: Update an employee with role
-      parameters:
-      - description: Employee
-        in: body
-        name: employee
-        required: true
-        schema:
-          $ref: '#/definitions/models.EmployeeRoleUpdate'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Employee role updated successfully.
-          schema:
-            type: string
-        "400":
-          description: Invalid input.
-          schema:
-            type: string
-        "401":
-          description: Unauthorized.
-          schema:
-            type: string
-        "404":
-          description: Employee not found.
-          schema:
-            type: string
-        "500":
-          description: Failed to update employee.
-          schema:
-            type: string
-      summary: Update an employee
-      tags:
-      - Employee
-  /report:
-    post:
-      consumes:
-      - application/json
-      description: Get reports of shop or user
-      parameters:
-      - description: Report
-        in: body
-        name: report
-        required: true
-        schema:
-          $ref: '#/definitions/models.ReportRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.CashEntry'
-        "400":
-          description: Invalid date range.
-          schema:
-            type: string
-        "404":
-          description: Shop not found.
-          schema:
-            type: string
-        "500":
-          description: Failed to encode data.
-          schema:
-            type: string
-      summary: Get report
-      tags:
-      - Report
-  /report/employee:
-    post:
-      consumes:
-      - application/json
-      description: Generate a cash report for a specific employee within a shop owned
-        by the user
-      parameters:
-      - description: Report Request
-        in: body
-        name: report_request
-        required: true
-        schema:
-          $ref: '#/definitions/models.EmployeeReportRequest'
+      description: Retrieve a list of customers for the authenticated user's shop
       produces:
       - application/json
       responses:
@@ -455,99 +116,244 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/models.CashEntry'
+              $ref: '#/definitions/models.Customer'
             type: array
-        "400":
-          description: Invalid input.
-          schema:
-            type: string
-        "403":
-          description: 'Forbidden: Only owners can access this endpoint.'
-          schema:
-            type: string
-        "404":
-          description: Shop or employee not found.
+        "401":
+          description: Unauthorized
           schema:
             type: string
         "500":
-          description: Failed to generate report.
+          description: Failed to find customers
           schema:
             type: string
-      summary: Generate a cash report for an employee
+      summary: Get list of customers
       tags:
-      - Report
-  /shop:
+      - Customers
     post:
       consumes:
       - application/json
-      description: Create a shop with name and adress
+      description: Create a new customer associated with the authenticated user's
+        shop
       parameters:
-      - description: Shop
+      - description: Customer body
         in: body
-        name: shop
+        name: customer
         required: true
         schema:
-          $ref: '#/definitions/models.Shop'
+          $ref: '#/definitions/models.Customer'
       produces:
       - application/json
       responses:
-        "200":
-          description: Shop created successfully.
+        "201":
+          description: Customer created successfully
           schema:
             type: string
         "400":
           description: Invalid input
           schema:
             type: string
-        "500":
-          description: Failed to create shop.
+        "401":
+          description: Unauthorized
           schema:
             type: string
-      summary: Create a shop
+        "500":
+          description: Failed to create customer
+          schema:
+            type: string
+      summary: Add a new customer
       tags:
-      - Shop
-  /shop/{shop_id}:
+      - Customers
+  /customers/{customer_id}:
     delete:
       consumes:
       - application/json
-      description: Delete a shop
+      description: Delete a customer from the authenticated user's shop
       parameters:
-      - description: Shop
-        in: body
-        name: shop
+      - description: Customer ID
+        in: path
+        name: customer_id
         required: true
-        schema:
-          $ref: '#/definitions/models.Shop'
+        type: integer
       produces:
       - application/json
       responses:
         "200":
-          description: Shop deleted successfully.
+          description: Customer deleted successfully
           schema:
             type: string
         "400":
-          description: Invalid id.
+          description: Invalid customer id
           schema:
             type: string
         "401":
-          description: Unauthorized.
-          schema:
-            type: string
-        "404":
-          description: Shop not found.
+          description: Unauthorized
           schema:
             type: string
         "500":
-          description: Failed to delete shop.
+          description: Failed to delete customer
           schema:
             type: string
-      summary: Delete a shop
+      summary: Delete a customer
       tags:
-      - Shop
+      - Customers
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a customer's details for the authenticated user's shop
+      parameters:
+      - description: Customer ID
+        in: path
+        name: customer_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Customer'
+        "400":
+          description: Invalid customer id
+          schema:
+            type: string
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+        "500":
+          description: Failed to find customer
+          schema:
+            type: string
+      summary: Get a customer
+      tags:
+      - Customers
     put:
       consumes:
       - application/json
-      description: Update shop's name and adress
+      description: Update a customer's details for the authenticated user's shop
+      parameters:
+      - description: Customer ID
+        in: path
+        name: customer_id
+        required: true
+        type: integer
+      - description: Updated customer body
+        in: body
+        name: customer
+        required: true
+        schema:
+          $ref: '#/definitions/models.Customer'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Customer'
+        "400":
+          description: Invalid input
+          schema:
+            type: string
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+        "500":
+          description: Failed to update customer
+          schema:
+            type: string
+      summary: Update an existing customer
+      tags:
+      - Customers
+  /shop:
+    delete:
+      consumes:
+      - application/json
+      description: Delete the shop and all related records for the authenticated user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Shop deleted successfully
+          schema:
+            type: string
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+        "500":
+          description: Failed to delete shop
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Delete shop
+      tags:
+      - shop
+    get:
+      consumes:
+      - application/json
+      description: Get details of the shop for the authenticated user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Shop'
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+        "500":
+          description: Failed to get shop
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Get shop details
+      tags:
+      - shop
+    post:
+      consumes:
+      - application/json
+      description: Create a new shop for the user
+      parameters:
+      - description: Shop
+        in: body
+        name: shop
+        required: true
+        schema:
+          $ref: '#/definitions/models.Shop'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Shop'
+        "400":
+          description: Invalid request body
+          schema:
+            type: string
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+        "500":
+          description: Failed to create shop
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Create a new shop
+      tags:
+      - shop
+    put:
+      consumes:
+      - application/json
+      description: Update the details of the shop for the authenticated user
       parameters:
       - description: Shop
         in: body
@@ -559,36 +365,63 @@ paths:
       - application/json
       responses:
         "200":
-          description: Shop updated successfully.
+          description: OK
           schema:
-            type: string
+            $ref: '#/definitions/models.Shop'
         "400":
-          description: Invalid input.
+          description: Invalid request body
           schema:
             type: string
         "401":
-          description: Unauthorized.
+          description: Unauthorized
           schema:
             type: string
         "500":
-          description: Failed to update shop.
+          description: Failed to update shop
           schema:
             type: string
-      summary: Update shop
+      security:
+      - ApiKeyAuth: []
+      summary: Update shop details
       tags:
-      - Shop
-  /transaction:
+      - shop
+  /transactions:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a list of transactions for the authenticated user's shop
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Transaction'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+        "500":
+          description: Failed to find transactions
+          schema:
+            type: string
+      summary: Get list of transactions
+      tags:
+      - Transactions
     post:
       consumes:
       - application/json
-      description: Create a new transaction.
+      description: Record a new transaction associated with the authenticated user's
+        shop
       parameters:
-      - description: Transaction
+      - description: Transaction body
         in: body
-        name: Transaction
+        name: transaction
         required: true
         schema:
-          $ref: '#/definitions/models.CustomerTransaction'
+          $ref: '#/definitions/models.Transaction'
       produces:
       - application/json
       responses:
@@ -597,76 +430,128 @@ paths:
           schema:
             type: string
         "400":
-          description: Invalid input.
+          description: Invalid input
+          schema:
+            type: string
+        "401":
+          description: Unauthorized
           schema:
             type: string
         "500":
           description: Failed to create transaction
           schema:
             type: string
-      summary: Create a transaction
+      summary: Create a new transaction
       tags:
-      - Transaction
-  /transaction/{transaction_id}:
-    get:
+      - Transactions
+  /transactions/{transaction_id}:
+    delete:
       consumes:
       - application/json
-      description: Get a transaction.
+      description: Delete a transaction by its ID
       parameters:
-      - description: Transaction
-        in: body
-        name: Transaction
+      - description: Transaction ID
+        in: path
+        name: transaction_id
         required: true
-        schema:
-          $ref: '#/definitions/models.CustomerTransaction'
+        type: integer
       produces:
       - application/json
       responses:
-        "201":
-          description: Created
+        "200":
+          description: Transaction deleted successfully.
           schema:
-            $ref: '#/definitions/models.CustomerTransaction'
+            type: string
         "400":
-          description: Failed to create transaction
+          description: Invalid transaction id
           schema:
             type: string
         "404":
-          description: Failed to get transaction.
+          description: Failed to find transaction
+          schema:
+            type: string
+        "500":
+          description: Failed to delete transaction
+          schema:
+            type: string
+      summary: Delete a transaction
+      tags:
+      - Transactions
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a transaction by its ID
+      parameters:
+      - description: Transaction ID
+        in: path
+        name: transaction_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Transaction'
+        "400":
+          description: Invalid transaction id
+          schema:
+            type: string
+        "404":
+          description: Failed to find transaction
+          schema:
+            type: string
+        "500":
+          description: Failed to encode transaction
           schema:
             type: string
       summary: Get a transaction
       tags:
-      - Transaction
-  /user/get-profile:
-    get:
+      - Transactions
+    put:
       consumes:
       - application/json
-      description: Pulls the user's own profile information.
+      description: Update an existing transaction details associated with the authenticated
+        user's shop
       parameters:
-      - description: User
+      - description: Transaction ID
+        in: path
+        name: transaction_id
+        required: true
+        type: integer
+      - description: Updated transaction body
         in: body
-        name: user
+        name: transaction
         required: true
         schema:
-          $ref: '#/definitions/models.User'
+          $ref: '#/definitions/models.Transaction'
       produces:
       - application/json
       responses:
-        "201":
-          description: Created
+        "200":
+          description: Transaction updated successfully.
           schema:
-            $ref: '#/definitions/models.User'
+            type: string
         "400":
-          description: Invalid input.
+          description: Invalid input
+          schema:
+            type: string
+        "401":
+          description: Unauthorized
           schema:
             type: string
         "404":
-          description: User not found.
+          description: Failed to find transaction
           schema:
             type: string
-      summary: GetProfile a user
+        "500":
+          description: Failed to update transaction
+          schema:
+            type: string
+      summary: Update an existing transaction
       tags:
-      - User
+      - Transactions
   /user/login:
     post:
       consumes:
@@ -728,114 +613,4 @@ paths:
       summary: Register a new user
       tags:
       - Auth
-  /user/update-password:
-    put:
-      consumes:
-      - application/json
-      description: Update the user's password.
-      parameters:
-      - description: User
-        in: body
-        name: user
-        required: true
-        schema:
-          $ref: '#/definitions/models.PasswordUpdateReq'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Password updated successfully.
-          schema:
-            type: string
-        "400":
-          description: Invalid input.
-          schema:
-            type: string
-        "404":
-          description: User not found.
-          schema:
-            type: string
-      summary: UpdatePassword a user
-      tags:
-      - User
-  /user/update-profile:
-    put:
-      consumes:
-      - application/json
-      description: Update the user's profile.
-      parameters:
-      - description: User
-        in: body
-        name: user
-        required: true
-        schema:
-          $ref: '#/definitions/models.User'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: User updated successfully.
-          schema:
-            type: string
-        "400":
-          description: Invalid input.
-          schema:
-            type: string
-        "404":
-          description: User not found.
-          schema:
-            type: string
-      summary: UpdateProfile a user
-      tags:
-      - User
-  /users/{user_id}/delete:
-    delete:
-      description: Delete a user by ID
-      parameters:
-      - description: User ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      responses:
-        "204":
-          description: User deleted successfully
-          schema:
-            type: string
-        "400":
-          description: Invalid user ID
-          schema:
-            type: string
-        "404":
-          description: User not found
-          schema:
-            type: string
-      summary: Delete a user
-      tags:
-      - User
-  /users/close-account:
-    delete:
-      description: Close account
-      parameters:
-      - description: User ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      responses:
-        "204":
-          description: Account closed successfully.
-          schema:
-            type: string
-        "400":
-          description: Invalid user ID
-          schema:
-            type: string
-        "404":
-          description: User not found
-          schema:
-            type: string
-      summary: Close a user own account
-      tags:
-      - User
 swagger: "2.0"

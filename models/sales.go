@@ -1,16 +1,15 @@
 package models
 
 import (
-	"github.com/google/uuid"
 	"time"
 )
 
 type Sale struct {
-	ID          uuid.UUID `gorm:"type:uuid;default:uuid_generate_v4();primary_key"`
-	ShopID      uuid.UUID `gorm:"type:uuid;not null"`
-	CustomerID  uuid.UUID `gorm:"type:uuid"`
-	TotalAmount float64   `gorm:"type:float;not null"`
-	Discount    float64   `gorm:"type:float"`
+	ID          uint    `gorm:"primary_key"`
+	ShopID      uint    `gorm:"type:uint;not null"`
+	CustomerID  *uint   `gorm:"type:uint"`
+	TotalAmount float64 `gorm:"type:double;not null"`
+	Discount    float64 `gorm:"type:double"`
 	CreatedAt   time.Time
 
 	Shop     Shop      `gorm:"foreignKey:ShopID"`

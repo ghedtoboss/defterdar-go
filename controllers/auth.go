@@ -2,12 +2,13 @@ package controllers
 
 import (
 	"defterdar-go/database"
+	"defterdar-go/helpers"
 	"defterdar-go/models"
 	"encoding/json"
 	"net/http"
 	"time"
 
-	"github.com/dgrijalva/jwt-go"
+	"github.com/golang-jwt/jwt/v4"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -30,11 +31,6 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if user.Role == "" {
-		http.Error(w, "Role is required.", http.StatusBadRequest)
-		return
-	}
-
 	hashedPass, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
 	if err != nil {
 		http.Error(w, "Failed to hash password.", http.StatusInternalServerError)
@@ -42,6 +38,7 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	}
 
 	user.Password = string(hashedPass)
+	user.Role = "owner"
 	user.CreatedAt = time.Now()
 	user.UpdatedAt = time.Now()
 
@@ -90,17 +87,17 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	expirationTime := time.Now().Add(720 * time.Hour)
-	claims := models.Claim{
+	claims := models.Claims{
 		Email:  user.Email,
 		UserID: user.ID,
 		Role:   user.Role,
-		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: expirationTime.Unix(),
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(expirationTime),
 		},
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenStr, err := token.SignedString([]byte("jwtKey"))
+	tokenStr, err := token.SignedString(helpers.GetJwtKey())
 	if err != nil {
 		http.Error(w, "Failed to create token.", http.StatusInternalServerError)
 		return

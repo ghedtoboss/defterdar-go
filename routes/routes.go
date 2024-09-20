@@ -12,25 +12,25 @@ import (
 func InitRoutes() *mux.Router {
 	r := mux.NewRouter()
 
-	r.HandleFunc("/user/register", controllers.Register).Methods("POST")
-	r.HandleFunc("/user/login", controllers.Login).Methods("POST")
-	r.Handle("/user/get-profile", middleware.JWTAuth(http.HandlerFunc(controllers.GetProfile))).Methods("GET")
-	r.Handle("/user/update-profile", middleware.JWTAuth(http.HandlerFunc(controllers.UpdateProfile))).Methods("PUT")
-	r.Handle("/user/update-password", middleware.JWTAuth(http.HandlerFunc(controllers.UpdatePassword))).Methods("PUT")
-	r.Handle("/users/{user_id}/delete", middleware.JWTAuth(middleware.Authorize("admin")(http.HandlerFunc(controllers.DeleteUser)))).Methods("DELETE")
-	r.Handle("/users/close-account", middleware.JWTAuth(http.HandlerFunc(controllers.CloseAccount))).Methods("DELETE")
+	r.HandleFunc("/users/register", controllers.Register).Methods("POST") // kayıt
+	r.HandleFunc("/users/login", controllers.Login).Methods("POST")       //giriş
 
-	r.Handle("/shop", middleware.JWTAuth(middleware.Authorize("owner")(http.HandlerFunc(controllers.CreateShop)))).Methods("POST")
-	r.Handle("/shop/{shop_id}", middleware.JWTAuth(middleware.Authorize("owner")(http.HandlerFunc(controllers.UpdateShop)))).Methods("PUT")
-	r.Handle("/shop/{shop_id}", middleware.JWTAuth(middleware.Authorize("owner")(http.HandlerFunc(controllers.DeleteShop)))).Methods("DELETE")
+	r.Handle("/shop", middleware.JWTAuth(middleware.Authorize("owner")(http.HandlerFunc(controllers.CreateShop)))).Methods("POST")   //shop acma
+	r.Handle("/shop", middleware.JWTAuth(middleware.Authorize("owner")(http.HandlerFunc(controllers.GetShop)))).Methods("GET")       //shop bilgileri
+	r.Handle("/shop", middleware.JWTAuth(middleware.Authorize("owner")(http.HandlerFunc(controllers.UpdateShop)))).Methods("PUT")    //shop güncelleme
+	r.Handle("/shop", middleware.JWTAuth(middleware.Authorize("owner")(http.HandlerFunc(controllers.DeleteShop)))).Methods("DELETE") //shop silme
 
-	r.Handle("/employee/{shop_id}", middleware.JWTAuth(middleware.Authorize("owner")(http.HandlerFunc(controllers.AddEmployee)))).Methods("POST")
-	r.Handle("/employee/{shop_id}", middleware.JWTAuth(middleware.Authorize("owner")(http.HandlerFunc(controllers.RemoveEmployee)))).Methods("DELETE")
-	r.Handle("/employee/{user_id}", middleware.JWTAuth(middleware.Authorize("owner")(http.HandlerFunc(controllers.UpdateEmployeeRole)))).Methods("PUT")
-	r.Handle("/employee/{shop_id}", middleware.JWTAuth(middleware.Authorize("owner")(http.HandlerFunc(controllers.ListEmployeeInShop)))).Methods("GET")
+	r.Handle("customers", middleware.JWTAuth(http.HandlerFunc(controllers.AddCustomer))).Methods("POST")                     //müşteri oluşturma
+	r.Handle("/customers/{customer_id}", middleware.JWTAuth(http.HandlerFunc(controllers.UpdateCustomer))).Methods("PUT")    //müşteri profili güncelleme
+	r.Handle("/customers/{customer_id}", middleware.JWTAuth(http.HandlerFunc(controllers.DeleteCustomer))).Methods("DELETE") //müşteri silme
+	r.Handle("/customers", middleware.JWTAuth(http.HandlerFunc(controllers.GetCustomers))).Methods("GET")                    //müşterileri çekme
+	r.Handle("/customers/{customer_id}", middleware.JWTAuth(http.HandlerFunc(controllers.GetCustomer))).Methods("GET")       //müşteriyi çekme
 
-	r.Handle("/report", middleware.JWTAuth(middleware.Authorize("owner")(http.HandlerFunc(controllers.GetCashReports))))
-	r.Handle("/report/employee", middleware.JWTAuth(middleware.Authorize("owner")(http.HandlerFunc(controllers.GetEmployeeCashReport))))
+	r.Handle("/transactions", middleware.JWTAuth(middleware.Authorize("owner", "employee")(http.HandlerFunc(controllers.CreateTransaction)))).Methods("POST")                    //işlem oluşturma
+	r.Handle("/transactions/{transaction_id}", middleware.JWTAuth(middleware.Authorize("owner", "employee")(http.HandlerFunc(controllers.UpdateTransaction)))).Methods("PUT")    //işlem güncelleme
+	r.Handle("/transactions", middleware.JWTAuth(middleware.Authorize("owner", "employee")(http.HandlerFunc(controllers.GetTransactions)))).Methods("GET")                       //işlemleri çekme
+	r.Handle("/transactions/{transaction_id}", middleware.JWTAuth(middleware.Authorize("owner", "employee")(http.HandlerFunc(controllers.GetTransaction)))).Methods("GET")       //işlem çekme
+	r.Handle("/transactions/{transaction_id}", middleware.JWTAuth(middleware.Authorize("owner", "employee")(http.HandlerFunc(controllers.DeleteTransaction)))).Methods("DELETE") //işlem silme
 
 	r.PathPrefix("/swagger/").Handler(httpSwagger.Handler(
 		httpSwagger.URL("http://localhost:8080/docs/swagger.json"),

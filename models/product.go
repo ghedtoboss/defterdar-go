@@ -1,18 +1,17 @@
 package models
 
 import (
-	"github.com/google/uuid"
 	"time"
 )
 
 type Product struct {
-	ID            uuid.UUID `gorm:"type:uuid;primary_key;default:uuid_generate_v4()"`
+	ID            uint      `gorm:"primary_key"`
 	Name          string    `gorm:"type:varchar(100);not null"`
 	Description   string    `gorm:"type:text"`
-	Price         float64   `gorm:"type:decimal(10,2);not null"`
-	Cost          float64   `gorm:"type:decimal(10,2)"`
+	Price         float64   `gorm:"type:double;not null"`
+	Cost          float64   `gorm:"type:double"`
 	StockQuantity int       `gorm:"type:int;not null"`
-	ShopID        uuid.UUID `gorm:"type:uuid;not null"`
+	ShopID        uint      `gorm:"type:uint;not null"`
 	SupplierName  string    `gorm:"type:varchar(100)"` // Tedarikçi adı
 	SupplierEmail string    `gorm:"type:varchar(100)"` // Tedarikçi e-posta
 	SupplierPhone string    `gorm:"type:varchar(15)"`  // Tedarikçi telefon

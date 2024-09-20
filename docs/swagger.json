@@ -17,9 +17,9 @@
     "host": "localhost:8080",
     "basePath": "/api/v1",
     "paths": {
-        "/cash": {
+        "/customers": {
             "get": {
-                "description": "Get cash entries with dates",
+                "description": "Retrieve a list of customers for the authenticated user's shop",
                 "consumes": [
                     "application/json"
                 ],
@@ -27,436 +27,35 @@
                     "application/json"
                 ],
                 "tags": [
-                    "Cash"
+                    "Customers"
                 ],
-                "summary": "Get cash entries",
-                "parameters": [
-                    {
-                        "description": "CashEntry",
-                        "name": "cashentry",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.CashEntry"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/models.CashEntry"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid input.",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "404": {
-                        "description": "Shop not found.",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "500": {
-                        "description": "Failed to get cash entries.",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            },
-            "post": {
-                "description": "Create a cash entry with description, amount, type, and optionally link it to a customer",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Cash"
-                ],
-                "summary": "Create a cash entry",
-                "parameters": [
-                    {
-                        "description": "CashEntry",
-                        "name": "cashentry",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.CashEntry"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Cash entry created successfully.",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid input.",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "404": {
-                        "description": "Shop or customer not found.",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "500": {
-                        "description": "Failed to create cash entry.",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/employee/{shop_id}": {
-            "get": {
-                "description": "List employees in shop",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Employee"
-                ],
-                "summary": "List employees",
-                "parameters": [
-                    {
-                        "description": "Employee",
-                        "name": "employee",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.Employee"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.Employee"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid id.",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized.",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "404": {
-                        "description": "Employees not found.",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            },
-            "post": {
-                "description": "Add an employee with role",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Employee"
-                ],
-                "summary": "Add an employee",
-                "parameters": [
-                    {
-                        "description": "Employee",
-                        "name": "employee",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.Employee"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Employee added successfully.",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid input.",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized.",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "404": {
-                        "description": "Shop not found.",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "500": {
-                        "description": "Failed to add employee.",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "description": "Remove an employee from shop",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Employee"
-                ],
-                "summary": "Remove an employee",
-                "parameters": [
-                    {
-                        "description": "Employee",
-                        "name": "employee",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.Employee"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Employee removed successfully.",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "400": {
-                        "description": "The employee is not an employee of this workplace.",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized.",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "404": {
-                        "description": "Employee not found.",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "500": {
-                        "description": "Failed to remove employee.",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/employee/{user_id}": {
-            "put": {
-                "description": "Update an employee with role",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Employee"
-                ],
-                "summary": "Update an employee",
-                "parameters": [
-                    {
-                        "description": "Employee",
-                        "name": "employee",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.EmployeeRoleUpdate"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Employee role updated successfully.",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid input.",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized.",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "404": {
-                        "description": "Employee not found.",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "500": {
-                        "description": "Failed to update employee.",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/report": {
-            "post": {
-                "description": "Get reports of shop or user",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Report"
-                ],
-                "summary": "Get report",
-                "parameters": [
-                    {
-                        "description": "Report",
-                        "name": "report",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.ReportRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.CashEntry"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid date range.",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "404": {
-                        "description": "Shop not found.",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "500": {
-                        "description": "Failed to encode data.",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/report/employee": {
-            "post": {
-                "description": "Generate a cash report for a specific employee within a shop owned by the user",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Report"
-                ],
-                "summary": "Generate a cash report for an employee",
-                "parameters": [
-                    {
-                        "description": "Report Request",
-                        "name": "report_request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.EmployeeReportRequest"
-                        }
-                    }
-                ],
+                "summary": "Get list of customers",
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/models.CashEntry"
+                                "$ref": "#/definitions/models.Customer"
                             }
                         }
                     },
-                    "400": {
-                        "description": "Invalid input.",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "403": {
-                        "description": "Forbidden: Only owners can access this endpoint.",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "404": {
-                        "description": "Shop or employee not found.",
+                    "401": {
+                        "description": "Unauthorized",
                         "schema": {
                             "type": "string"
                         }
                     },
                     "500": {
-                        "description": "Failed to generate report.",
+                        "description": "Failed to find customers",
                         "schema": {
                             "type": "string"
                         }
                     }
                 }
-            }
-        },
-        "/shop": {
+            },
             "post": {
-                "description": "Create a shop with name and adress",
+                "description": "Create a new customer associated with the authenticated user's shop",
                 "consumes": [
                     "application/json"
                 ],
@@ -464,23 +63,23 @@
                     "application/json"
                 ],
                 "tags": [
-                    "Shop"
+                    "Customers"
                 ],
-                "summary": "Create a shop",
+                "summary": "Add a new customer",
                 "parameters": [
                     {
-                        "description": "Shop",
-                        "name": "shop",
+                        "description": "Customer body",
+                        "name": "customer",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.Shop"
+                            "$ref": "#/definitions/models.Customer"
                         }
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "Shop created successfully.",
+                    "201": {
+                        "description": "Customer created successfully",
                         "schema": {
                             "type": "string"
                         }
@@ -491,8 +90,14 @@
                             "type": "string"
                         }
                     },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
                     "500": {
-                        "description": "Failed to create shop.",
+                        "description": "Failed to create customer",
                         "schema": {
                             "type": "string"
                         }
@@ -500,9 +105,9 @@
                 }
             }
         },
-        "/shop/{shop_id}": {
-            "put": {
-                "description": "Update shop's name and adress",
+        "/customers/{customer_id}": {
+            "get": {
+                "description": "Retrieve a customer's details for the authenticated user's shop",
                 "consumes": [
                     "application/json"
                 ],
@@ -510,41 +115,96 @@
                     "application/json"
                 ],
                 "tags": [
-                    "Shop"
+                    "Customers"
                 ],
-                "summary": "Update shop",
+                "summary": "Get a customer",
                 "parameters": [
                     {
-                        "description": "Shop",
-                        "name": "shop",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.Shop"
-                        }
+                        "type": "integer",
+                        "description": "Customer ID",
+                        "name": "customer_id",
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Shop updated successfully.",
+                        "description": "OK",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/models.Customer"
                         }
                     },
                     "400": {
-                        "description": "Invalid input.",
+                        "description": "Invalid customer id",
                         "schema": {
                             "type": "string"
                         }
                     },
                     "401": {
-                        "description": "Unauthorized.",
+                        "description": "Unauthorized",
                         "schema": {
                             "type": "string"
                         }
                     },
                     "500": {
-                        "description": "Failed to update shop.",
+                        "description": "Failed to find customer",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update a customer's details for the authenticated user's shop",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Customers"
+                ],
+                "summary": "Update an existing customer",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Customer ID",
+                        "name": "customer_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Updated customer body",
+                        "name": "customer",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Customer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Customer"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to update customer",
                         "schema": {
                             "type": "string"
                         }
@@ -552,7 +212,7 @@
                 }
             },
             "delete": {
-                "description": "Delete a shop",
+                "description": "Delete a customer from the authenticated user's shop",
                 "consumes": [
                     "application/json"
                 ],
@@ -560,9 +220,102 @@
                     "application/json"
                 ],
                 "tags": [
-                    "Shop"
+                    "Customers"
                 ],
-                "summary": "Delete a shop",
+                "summary": "Delete a customer",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Customer ID",
+                        "name": "customer_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Customer deleted successfully",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid customer id",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to delete customer",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/shop": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Get details of the shop for the authenticated user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "shop"
+                ],
+                "summary": "Get shop details",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Shop"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to get shop",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Update the details of the shop for the authenticated user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "shop"
+                ],
+                "summary": "Update shop details",
                 "parameters": [
                     {
                         "description": "Shop",
@@ -576,41 +329,38 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Shop deleted successfully.",
+                        "description": "OK",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/models.Shop"
                         }
                     },
                     "400": {
-                        "description": "Invalid id.",
+                        "description": "Invalid request body",
                         "schema": {
                             "type": "string"
                         }
                     },
                     "401": {
-                        "description": "Unauthorized.",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "404": {
-                        "description": "Shop not found.",
+                        "description": "Unauthorized",
                         "schema": {
                             "type": "string"
                         }
                     },
                     "500": {
-                        "description": "Failed to delete shop.",
+                        "description": "Failed to update shop",
                         "schema": {
                             "type": "string"
                         }
                     }
                 }
-            }
-        },
-        "/transaction": {
+            },
             "post": {
-                "description": "Create a new transaction.",
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Create a new shop for the user",
                 "consumes": [
                     "application/json"
                 ],
@@ -618,17 +368,143 @@
                     "application/json"
                 ],
                 "tags": [
-                    "Transaction"
+                    "shop"
                 ],
-                "summary": "Create a transaction",
+                "summary": "Create a new shop",
                 "parameters": [
                     {
-                        "description": "Transaction",
-                        "name": "Transaction",
+                        "description": "Shop",
+                        "name": "shop",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.CustomerTransaction"
+                            "$ref": "#/definitions/models.Shop"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/models.Shop"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to create shop",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Delete the shop and all related records for the authenticated user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "shop"
+                ],
+                "summary": "Delete shop",
+                "responses": {
+                    "200": {
+                        "description": "Shop deleted successfully",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to delete shop",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/transactions": {
+            "get": {
+                "description": "Retrieve a list of transactions for the authenticated user's shop",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Transactions"
+                ],
+                "summary": "Get list of transactions",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Transaction"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to find transactions",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Record a new transaction associated with the authenticated user's shop",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Transactions"
+                ],
+                "summary": "Create a new transaction",
+                "parameters": [
+                    {
+                        "description": "Transaction body",
+                        "name": "transaction",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Transaction"
                         }
                     }
                 ],
@@ -640,7 +516,13 @@
                         }
                     },
                     "400": {
-                        "description": "Invalid input.",
+                        "description": "Invalid input",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
                         "schema": {
                             "type": "string"
                         }
@@ -654,9 +536,9 @@
                 }
             }
         },
-        "/transaction/{transaction_id}": {
+        "/transactions/{transaction_id}": {
             "get": {
-                "description": "Get a transaction.",
+                "description": "Retrieve a transaction by its ID",
                 "consumes": [
                     "application/json"
                 ],
@@ -664,45 +546,47 @@
                     "application/json"
                 ],
                 "tags": [
-                    "Transaction"
+                    "Transactions"
                 ],
                 "summary": "Get a transaction",
                 "parameters": [
                     {
-                        "description": "Transaction",
-                        "name": "Transaction",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.CustomerTransaction"
-                        }
+                        "type": "integer",
+                        "description": "Transaction ID",
+                        "name": "transaction_id",
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {
-                    "201": {
-                        "description": "Created",
+                    "200": {
+                        "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.CustomerTransaction"
+                            "$ref": "#/definitions/models.Transaction"
                         }
                     },
                     "400": {
-                        "description": "Failed to create transaction",
+                        "description": "Invalid transaction id",
                         "schema": {
                             "type": "string"
                         }
                     },
                     "404": {
-                        "description": "Failed to get transaction.",
+                        "description": "Failed to find transaction",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to encode transaction",
                         "schema": {
                             "type": "string"
                         }
                     }
                 }
-            }
-        },
-        "/user/get-profile": {
-            "get": {
-                "description": "Pulls the user's own profile information.",
+            },
+            "put": {
+                "description": "Update an existing transaction details associated with the authenticated user's shop",
                 "consumes": [
                     "application/json"
                 ],
@@ -710,35 +594,102 @@
                     "application/json"
                 ],
                 "tags": [
-                    "User"
+                    "Transactions"
                 ],
-                "summary": "GetProfile a user",
+                "summary": "Update an existing transaction",
                 "parameters": [
                     {
-                        "description": "User",
-                        "name": "user",
+                        "type": "integer",
+                        "description": "Transaction ID",
+                        "name": "transaction_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Updated transaction body",
+                        "name": "transaction",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.User"
+                            "$ref": "#/definitions/models.Transaction"
                         }
                     }
                 ],
                 "responses": {
-                    "201": {
-                        "description": "Created",
+                    "200": {
+                        "description": "Transaction updated successfully.",
                         "schema": {
-                            "$ref": "#/definitions/models.User"
+                            "type": "string"
                         }
                     },
                     "400": {
-                        "description": "Invalid input.",
+                        "description": "Invalid input",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
                         "schema": {
                             "type": "string"
                         }
                     },
                     "404": {
-                        "description": "User not found.",
+                        "description": "Failed to find transaction",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to update transaction",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete a transaction by its ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Transactions"
+                ],
+                "summary": "Delete a transaction",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Transaction ID",
+                        "name": "transaction_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Transaction deleted successfully.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid transaction id",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Failed to find transaction",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to delete transaction",
                         "schema": {
                             "type": "string"
                         }
@@ -837,225 +788,12 @@
                     }
                 }
             }
-        },
-        "/user/update-password": {
-            "put": {
-                "description": "Update the user's password.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "User"
-                ],
-                "summary": "UpdatePassword a user",
-                "parameters": [
-                    {
-                        "description": "User",
-                        "name": "user",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.PasswordUpdateReq"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Password updated successfully.",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid input.",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "404": {
-                        "description": "User not found.",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/user/update-profile": {
-            "put": {
-                "description": "Update the user's profile.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "User"
-                ],
-                "summary": "UpdateProfile a user",
-                "parameters": [
-                    {
-                        "description": "User",
-                        "name": "user",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.User"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "User updated successfully.",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid input.",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "404": {
-                        "description": "User not found.",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/users/close-account": {
-            "delete": {
-                "description": "Close account",
-                "tags": [
-                    "User"
-                ],
-                "summary": "Close a user own account",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "User ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": "Account closed successfully.",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid user ID",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "404": {
-                        "description": "User not found",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/users/{user_id}/delete": {
-            "delete": {
-                "description": "Delete a user by ID",
-                "tags": [
-                    "User"
-                ],
-                "summary": "Delete a user",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "User ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": "User deleted successfully",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid user ID",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "404": {
-                        "description": "User not found",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
         }
     },
     "definitions": {
-        "models.CashEntry": {
-            "type": "object",
-            "properties": {
-                "amount": {
-                    "type": "number"
-                },
-                "createdAt": {
-                    "type": "string"
-                },
-                "customer": {
-                    "$ref": "#/definitions/models.Customer"
-                },
-                "customerID": {
-                    "type": "integer"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "entryType": {
-                    "description": "e.g., income, expense",
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "shop": {
-                    "$ref": "#/definitions/models.Shop"
-                },
-                "shopID": {
-                    "type": "integer"
-                },
-                "updatedAt": {
-                    "type": "string"
-                },
-                "user": {
-                    "$ref": "#/definitions/models.User"
-                },
-                "userID": {
-                    "type": "integer"
-                }
-            }
-        },
         "models.Customer": {
             "type": "object",
             "properties": {
-                "address": {
-                    "type": "string"
-                },
                 "createdAt": {
                     "type": "string"
                 },
@@ -1079,103 +817,6 @@
                 },
                 "updatedAt": {
                     "type": "string"
-                },
-                "userID": {
-                    "type": "integer"
-                }
-            }
-        },
-        "models.CustomerTransaction": {
-            "type": "object",
-            "properties": {
-                "amount": {
-                    "type": "number"
-                },
-                "createdAt": {
-                    "type": "string"
-                },
-                "customer": {
-                    "$ref": "#/definitions/models.Customer"
-                },
-                "customerID": {
-                    "type": "integer"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "shop": {
-                    "$ref": "#/definitions/models.Shop"
-                },
-                "shopID": {
-                    "type": "integer"
-                },
-                "transactionType": {
-                    "description": "e.g., credit, debit",
-                    "type": "string"
-                },
-                "updatedAt": {
-                    "type": "string"
-                },
-                "user": {
-                    "$ref": "#/definitions/models.User"
-                },
-                "userID": {
-                    "type": "integer"
-                }
-            }
-        },
-        "models.Employee": {
-            "type": "object",
-            "properties": {
-                "createdAt": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "role": {
-                    "description": "e.g. employee, manager",
-                    "type": "string"
-                },
-                "shop": {
-                    "$ref": "#/definitions/models.Shop"
-                },
-                "shopID": {
-                    "type": "integer"
-                },
-                "updatedAt": {
-                    "type": "string"
-                },
-                "user": {
-                    "$ref": "#/definitions/models.User"
-                },
-                "userID": {
-                    "type": "integer"
-                }
-            }
-        },
-        "models.EmployeeReportRequest": {
-            "type": "object",
-            "properties": {
-                "employee_id": {
-                    "type": "integer"
-                },
-                "from_date": {
-                    "type": "string"
-                },
-                "to_date": {
-                    "type": "string"
-                }
-            }
-        },
-        "models.EmployeeRoleUpdate": {
-            "type": "object",
-            "properties": {
-                "role": {
-                    "type": "string"
                 }
             }
         },
@@ -1190,31 +831,6 @@
                     "type": "string"
                 },
                 "password": {
-                    "type": "string"
-                }
-            }
-        },
-        "models.PasswordUpdateReq": {
-            "type": "object",
-            "properties": {
-                "new_password": {
-                    "type": "string"
-                },
-                "old_password": {
-                    "type": "string"
-                }
-            }
-        },
-        "models.ReportRequest": {
-            "type": "object",
-            "properties": {
-                "from_date": {
-                    "type": "string"
-                },
-                "report_type": {
-                    "type": "string"
-                },
-                "to_date": {
                     "type": "string"
                 }
             }
@@ -1240,6 +856,44 @@
                 "ownerID": {
                     "type": "integer"
                 },
+                "phone": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.Transaction": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "number"
+                },
+                "category": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "date": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "shop": {
+                    "$ref": "#/definitions/models.Shop"
+                },
+                "shopID": {
+                    "type": "integer"
+                },
+                "type": {
+                    "type": "string"
+                },
                 "updatedAt": {
                     "type": "string"
                 }
@@ -1261,6 +915,9 @@
                     "type": "string"
                 },
                 "password": {
+                    "type": "string"
+                },
+                "phone": {
                     "type": "string"
                 },
                 "role": {

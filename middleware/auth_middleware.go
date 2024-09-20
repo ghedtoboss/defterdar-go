@@ -2,14 +2,12 @@ package middleware
 
 import (
 	"context"
+	"defterdar-go/helpers"
 	"defterdar-go/models"
 	"github.com/dgrijalva/jwt-go"
 	"net/http"
-	"os"
 	"strings"
 )
-
-var jwtKey = []byte(os.Getenv("JWT_KEY"))
 
 func JWTAuth(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -20,13 +18,13 @@ func JWTAuth(next http.Handler) http.Handler {
 		}
 
 		tokenStr := strings.TrimPrefix(authHeader, "Bearer ")
-		claims := &models.Claim{}
+		claims := &models.Claims{}
 		token, err := jwt.ParseWithClaims(tokenStr, claims, func(t *jwt.Token) (interface{}, error) {
-			return jwtKey, nil
+			return helpers.GetJwtKey(), nil
 		})
 
 		if err != nil || !token.Valid {
-			http.Error(w, "Invalid token.", http.StatusUnauthorized)
+			http.Error(w, "Invalid token."+err.Error(), http.StatusUnauthorized)
 			return
 		}
 
@@ -38,7 +36,7 @@ func JWTAuth(next http.Handler) http.Handler {
 func Authorize(roles ...string) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			user := r.Context().Value("user").(*models.Claim)
+			user := r.Context().Value("user").(*models.Claims)
 			authorized := false
 			for _, role := range roles {
 				if user.Role == role {
