@@ -5,9 +5,10 @@ import (
 	"defterdar-go/helpers"
 	"defterdar-go/models"
 	"encoding/json"
-	"github.com/gorilla/mux"
 	"net/http"
 	"strconv"
+
+	"github.com/gorilla/mux"
 )
 
 // AddCustomer godoc
@@ -43,7 +44,7 @@ func AddCustomer(w http.ResponseWriter, r *http.Request) {
 	}
 
 	customer.ShopID = shopID
-	if result := database.DB.Create(&customer); result.Error != nil {
+	if result := database.DBWrite.Create(&customer); result.Error != nil {
 		http.Error(w, "Failed to create customer.", http.StatusBadRequest)
 		return
 	}
@@ -88,7 +89,7 @@ func UpdateCustomer(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var customer models.Customer
-	if result := database.DB.Where("id = ?", customerID).First(&customer); result.Error != nil {
+	if result := database.DBRead.Where("id = ?", customerID).First(&customer); result.Error != nil {
 		http.Error(w, "Failed to find customer.", http.StatusBadRequest)
 		return
 	}
@@ -105,7 +106,7 @@ func UpdateCustomer(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if result := database.DB.Save(&updatedCustomer); result.Error != nil {
+	if result := database.DBWrite.Save(&updatedCustomer); result.Error != nil {
 		http.Error(w, "Failed to update customer.", http.StatusBadRequest)
 		return
 	}
@@ -141,7 +142,7 @@ func GetCustomers(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var customers []models.Customer
-	if result := database.DB.Where("shop_id = ?", shopID).Find(&customers); result.Error != nil {
+	if result := database.DBRead.Where("shop_id = ?", shopID).Find(&customers); result.Error != nil {
 		http.Error(w, "Failed to find customers.", http.StatusBadRequest)
 		return
 	}
@@ -187,7 +188,7 @@ func GetCustomer(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var customer models.Customer
-	if result := database.DB.Where("id = ? AND shop_id = ?", customerID, shopID).First(&customer); result.Error != nil {
+	if result := database.DBRead.Where("id = ? AND shop_id = ?", customerID, shopID).First(&customer); result.Error != nil {
 		http.Error(w, "Failed to find customer.", http.StatusBadRequest)
 		return
 	}
@@ -233,12 +234,12 @@ func DeleteCustomer(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var customer models.Customer
-	if result := database.DB.Where("id = ? AND shop_id = ?", customerID, shopID).First(&customer); result.Error != nil {
+	if result := database.DBRead.Where("id = ? AND shop_id = ?", customerID, shopID).First(&customer); result.Error != nil {
 		http.Error(w, "Failed to find customer.", http.StatusBadRequest)
 		return
 	}
 
-	if result := database.DB.Delete(&customer); result.Error != nil {
+	if result := database.DBWrite.Delete(&customer); result.Error != nil {
 		http.Error(w, "Failed to delete customer.", http.StatusBadRequest)
 		return
 	}

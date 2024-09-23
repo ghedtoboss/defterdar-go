@@ -40,7 +40,7 @@ func CreateShop(w http.ResponseWriter, r *http.Request) {
 	shop.UpdatedAt = time.Now()
 	shop.OwnerID = claims.UserID
 
-	if result := database.DB.Create(&shop); result.Error != nil {
+	if result := database.DBWrite.Create(&shop); result.Error != nil {
 		http.Error(w, "Failed to create shop.", http.StatusInternalServerError)
 		return
 	}
@@ -72,7 +72,7 @@ func GetShop(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var shop models.Shop
-	if result := database.DB.Preload("Owner").Where("owner_id = ?", claims.UserID).First(&shop); result.Error != nil {
+	if result := database.DBRead.Preload("Owner").Where("owner_id = ?", claims.UserID).First(&shop); result.Error != nil {
 		http.Error(w, "Failed to get shop.", http.StatusInternalServerError)
 		return
 	}
@@ -106,7 +106,7 @@ func UpdateShop(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var shop models.Shop
-	if result := database.DB.Preload("Owner").Where("owner_id = ?", claims.UserID).First(&shop); result.Error != nil {
+	if result := database.DBRead.Preload("Owner").Where("owner_id = ?", claims.UserID).First(&shop); result.Error != nil {
 		http.Error(w, "Failed to get shop.", http.StatusInternalServerError)
 		return
 	}
@@ -128,7 +128,7 @@ func UpdateShop(w http.ResponseWriter, r *http.Request) {
 	shop.Phone = shopUpdate.Phone
 	shop.UpdatedAt = time.Now()
 
-	if result := database.DB.Save(&shop); result.Error != nil {
+	if result := database.DBWrite.Save(&shop); result.Error != nil {
 		http.Error(w, "Failed to update shop.", http.StatusInternalServerError)
 		return
 	}
@@ -160,11 +160,11 @@ func DeleteShop(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var shop models.Shop
-	if result := database.DB.First(&shop, "owner_id = ?", claims.UserID); result.Error != nil {
+	if result := database.DBRead.First(&shop, "owner_id = ?", claims.UserID); result.Error != nil {
 		http.Error(w, "Failed to get shop.", http.StatusInternalServerError)
 		return
 	}
-	tx := database.DB.Begin()
+	tx := database.DBWrite.Begin()
 
 	tables := []string{
 		"cash_entries",

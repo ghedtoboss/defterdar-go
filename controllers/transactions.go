@@ -5,9 +5,10 @@ import (
 	"defterdar-go/helpers"
 	"defterdar-go/models"
 	"encoding/json"
-	"github.com/gorilla/mux"
 	"net/http"
 	"strconv"
+
+	"github.com/gorilla/mux"
 )
 
 // CreateTransaction godoc
@@ -43,7 +44,7 @@ func CreateTransaction(w http.ResponseWriter, r *http.Request) {
 	}
 
 	transaction.ShopID = shopID
-	if result := database.DB.Create(&transaction); result.Error != nil {
+	if result := database.DBWrite.Create(&transaction); result.Error != nil {
 		http.Error(w, "Failed to create transaction.", http.StatusInternalServerError)
 		return
 	}
@@ -91,7 +92,7 @@ func UpdateTransaction(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var transaction models.Transaction
-	if result := database.DB.Where("id = ? AND shop_id = ?", transactionID, shopID).First(&transaction); result.Error != nil {
+	if result := database.DBRead.Where("id = ? AND shop_id = ?", transactionID, shopID).First(&transaction); result.Error != nil {
 		http.Error(w, "Failed to find transaction.", http.StatusNotFound)
 		return
 	}
@@ -103,7 +104,7 @@ func UpdateTransaction(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if result := database.DB.Model(&transaction).Updates(updatedTransaction); result.Error != nil {
+	if result := database.DBWrite.Model(&transaction).Updates(updatedTransaction); result.Error != nil {
 		http.Error(w, "Failed to update transaction.", http.StatusInternalServerError)
 		return
 	}
@@ -140,7 +141,7 @@ func GetTransactions(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var transactions []models.Transaction
-	if result := database.DB.Where("shop_id = ?", shopID).Find(&transactions); result.Error != nil {
+	if result := database.DBRead.Where("shop_id = ?", shopID).Find(&transactions); result.Error != nil {
 		http.Error(w, "Failed to find transactions.", http.StatusInternalServerError)
 		return
 	}
@@ -173,7 +174,7 @@ func GetTransaction(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var transaction models.Transaction
-	if result := database.DB.Where("id = ?", transactionID).First(&transaction); result.Error != nil {
+	if result := database.DBRead.Where("id = ?", transactionID).First(&transaction); result.Error != nil {
 		http.Error(w, "Failed to find transaction.", http.StatusNotFound)
 		return
 	}
@@ -207,12 +208,12 @@ func DeleteTransaction(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var transaction models.Transaction
-	if result := database.DB.Where("id = ?", transactionID).First(&transaction); result.Error != nil {
+	if result := database.DBRead.Where("id = ?", transactionID).First(&transaction); result.Error != nil {
 		http.Error(w, "Failed to find transaction.", http.StatusNotFound)
 		return
 	}
 
-	if result := database.DB.Delete(&transaction); result.Error != nil {
+	if result := database.DBWrite.Delete(&transaction); result.Error != nil {
 		http.Error(w, "Failed to delete transaction.", http.StatusInternalServerError)
 		return
 	}

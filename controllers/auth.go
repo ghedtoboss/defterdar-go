@@ -42,7 +42,7 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	user.CreatedAt = time.Now()
 	user.UpdatedAt = time.Now()
 
-	if result := database.DB.Create(&user); result.Error != nil {
+	if result := database.DBWrite.Create(&user); result.Error != nil {
 		http.Error(w, "Failed to register.", http.StatusInternalServerError)
 		return
 	}
@@ -75,7 +75,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var user models.User
-	if result := database.DB.Where("email = ?", login.Email).First(&user); result.Error != nil {
+	if result := database.DBRead.Where("email = ?", login.Email).First(&user); result.Error != nil {
 		http.Error(w, "Invalid email or password.", http.StatusUnauthorized)
 		return
 	}
