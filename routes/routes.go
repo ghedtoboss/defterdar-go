@@ -20,7 +20,7 @@ func InitRoutes() *mux.Router {
 	r.Handle("/shop", middleware.JWTAuth(middleware.Authorize("owner")(http.HandlerFunc(controllers.UpdateShop)))).Methods("PUT")    //shop güncelleme
 	r.Handle("/shop", middleware.JWTAuth(middleware.Authorize("owner")(http.HandlerFunc(controllers.DeleteShop)))).Methods("DELETE") //shop silme
 
-	r.Handle("customers", middleware.JWTAuth(http.HandlerFunc(controllers.AddCustomer))).Methods("POST")                     //müşteri oluşturma
+	r.Handle("/customers", middleware.JWTAuth(http.HandlerFunc(controllers.AddCustomer))).Methods("POST")                    //müşteri oluşturma
 	r.Handle("/customers/{customer_id}", middleware.JWTAuth(http.HandlerFunc(controllers.UpdateCustomer))).Methods("PUT")    //müşteri profili güncelleme
 	r.Handle("/customers/{customer_id}", middleware.JWTAuth(http.HandlerFunc(controllers.DeleteCustomer))).Methods("DELETE") //müşteri silme
 	r.Handle("/customers", middleware.JWTAuth(http.HandlerFunc(controllers.GetCustomers))).Methods("GET")                    //müşterileri çekme

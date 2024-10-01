@@ -99,14 +99,24 @@ func UpdateCustomer(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var updatedCustomer models.Customer
+	var updatedCustomer map[string]interface{}
 	err = json.NewDecoder(r.Body).Decode(&updatedCustomer)
 	if err != nil {
 		http.Error(w, "Invalid input.", http.StatusBadRequest)
 		return
 	}
 
-	if result := database.DBWrite.Save(&updatedCustomer); result.Error != nil {
+	if updatedCustomer["name"] != nil {
+		customer.Name = updatedCustomer["name"].(string)
+	}
+	if updatedCustomer["email"] != nil {
+		customer.Email = updatedCustomer["email"].(string)
+	}
+	if updatedCustomer["phone"] != nil {
+		customer.Phone = updatedCustomer["phone"].(string)
+	}
+
+	if result := database.DBWrite.Save(&customer); result.Error != nil {
 		http.Error(w, "Failed to update customer.", http.StatusBadRequest)
 		return
 	}

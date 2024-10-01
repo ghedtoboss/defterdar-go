@@ -97,14 +97,27 @@ func UpdateTransaction(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var updatedTransaction models.Transaction
+	var updatedTransaction map[string]interface{}
 	err = json.NewDecoder(r.Body).Decode(&updatedTransaction)
 	if err != nil {
 		http.Error(w, "Invalid input.", http.StatusInternalServerError)
 		return
 	}
 
-	if result := database.DBWrite.Model(&transaction).Updates(updatedTransaction); result.Error != nil {
+	if updatedTransaction["amount"] != nil {
+		transaction.Amount = updatedTransaction["amount"].(float64)
+	}
+	if updatedTransaction["description"] != nil {
+		transaction.Description = updatedTransaction["description"].(*string)
+	}
+	if updatedTransaction["category"] != nil {
+		transaction.Category = updatedTransaction["category"].(*string)
+	}
+	if updatedTransaction["type"] != nil {
+		transaction.Type = updatedTransaction["type"].(string)
+	}
+
+	if result := database.DBWrite.Save(&transaction); result.Error != nil {
 		http.Error(w, "Failed to update transaction.", http.StatusInternalServerError)
 		return
 	}

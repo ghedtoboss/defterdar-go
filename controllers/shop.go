@@ -29,6 +29,16 @@ func CreateShop(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	var count int64
+	if result := database.DBRead.Model(&models.Shop{}).Where("owner_id = ?", claims.UserID).Count(&count); result.Error != nil {
+		http.Error(w, "kontrol sağlanamadı.", http.StatusInternalServerError)
+		return
+	}
+	if count > 0 {
+		http.Error(w, "Zaten bir iş yeriniz var.", http.StatusBadRequest)
+		return
+	}
+
 	var shop models.Shop
 	err = json.NewDecoder(r.Body).Decode(&shop)
 	if err != nil {
